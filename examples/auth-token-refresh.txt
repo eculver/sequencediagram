@@ -1,0 +1,8 @@
+title Token Refresh
+
+Browser->CloudService:getResource()
+
+note over CloudService: Token is expired
+CloudService-->Browser:307 Location: TokenManager
+Browser->TokenManager:getToken()
+note over TokenManager: Continue Token Negotiation

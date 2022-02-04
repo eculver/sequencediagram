@@ -1,0 +1,16 @@
+title Token Negotiation
+
+Browser->TokenManager:getToken()
+note over TokenManager:Assume registrationId exists
+note over TokenManager:Fetch registrationId, tenantId\nParse Host header\nEncrypt using CS pubkey
+TokenManager->CloudService:/token
+ref over TokenManager,CloudService: {registrationId, userId,Host header}, tenantID
+CloudService->Metadata: SELECT WHERE pk=tenantId
+ref over Metadata,CloudService: {registrationId, CS keypair, TM pubkey}
+box over CloudService: Decrypt\nValidate registrationId\nCreate token
+CloudService->Metadata: PUT pk=token
+ref over CloudService,Metadata: {tenantId}
+note over CloudService: Encrypt using TM pubkey
+CloudService->TokenManager: Return encrypted token
+note over TokenManager: Decrypt using TM privkey
+TokenManager->Browser: Return decrypted token

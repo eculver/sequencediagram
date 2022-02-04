@@ -1,0 +1,15 @@
+title Registration Refresh
+
+Browser->CloudService:getResource()
+note over CloudService: Registration is expired\n(registrationId == NULL)
+CloudService-->Browser:HTTP 307\nLocation: TokenManager?refresh_registration
+Browser->TokenManager:refreshRegistration()
+note over TokenManager: Generate new pub/priv keypair
+ref over TokenManager,CloudService: {pubkeyOld, pubkeyNew}
+TokenManager->CloudService: /auth
+note over CloudService: Validate pubkeyOld
+CloudService->Metadata: UPDATE pk=tenantId
+ref over CloudService,Metadata: {registrationId, pubkeyNew}
+CloudService->TokenManager: Return new registrationId
+note over TokenManager: Save registrationId
+note over TokenManager: Continue with Token Negotiation 

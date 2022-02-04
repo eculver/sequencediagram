@@ -1,0 +1,13 @@
+title Registration
+
+Browser->TokenManager:getToken()
+note over TokenManager: Assume CS pubkey exists, otherwise do Key Exchange
+note over TokenManager:Fetch licenseKey, redirectURI, CS pubkey\nEncrypt using CS pubkey
+TokenManager->CS:/register
+ref over TokenManager,CS:{licenseKey, redirectURI}, tenantId
+note over CS: Lookup keypair by tenantId\nDecrypt payload\nValidate licenseKey\nCreate registrationId
+CS->Metadata: UPDATE WHERE pk=tenantId\nSET registrationId=X
+note over CS: \nSign using CS priv key\nEncrypt using TM pubkey
+CS->TokenManager: Return encrypted payload
+note over TokenManager: Decrypt using TM privkey\nVerify signature using CS pubkey\nSave registrationId
+note over TokenManager: Continue with Token Negotiation

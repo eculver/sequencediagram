@@ -1,0 +1,13 @@
+title Key Exchange
+
+Browser->TokenManager:getToken()
+note over TokenManager:Create pub/priv keypair
+TokenManager->CS:/auth
+ref over TokenManager,CS:{pubkey}
+
+note over CS: Create tenantId\nCreate CS keypair
+CS->Metadata: PUT pk=tenantId
+ref over CS,Metadata: {TM pubkey, CS keypair}
+note over CS: Encrypt using TM pubkey
+CS->TokenManager: Return encrypted payload
+note over TokenManager: Continue with Registration
