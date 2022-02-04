@@ -1,0 +1,31 @@
+title Peering Protocol: Handshake
+
+participantspacing equal
+fontawesome5solid f5fc CLI A #000000
+fontawesome5solid f233 Peer A #000000
+fontawesome5solid f5fc CLI B #000000
+fontawesome5solid f233 Peer B #000000
+
+
+CLI A->Peer A:consul peering generate-token\nGET /peering/token?peer-alias=xxx
+rbox over Peer A:Generate secret
+rbox over Peer A:Lookup peering\nendpoint address
+rbox over Peer A:Persist token
+Peer A->CLI A:{secret, addrA, ttl, caA}
+
+par some secure means
+CLI A->CLI B: secret transfer
+end
+
+CLI B->Peer B:consul peering initiate\nPOST /peering/init\n{secret, addrA, caA}
+Peer B->Peer A:POST /peering/ack\n    {secret, addrB}
+
+rbox over Peer A:Validate token
+rbox over Peer A:Mark token
+Peer A->Peer B:{OK}
+
+rbox over Peer B: Persist peering config\n {secret, addrA, caA}
+Peer B->CLI B:{OK}
+
+
+note over CLI A,Peer B: Trust Between Peer A and P
